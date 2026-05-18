@@ -40,7 +40,7 @@ vector<Pos> snake;//保存每段蛇体的位置
 Pos applePos;//苹果生成的位置
 int direction = Right;//当前蛇的方向
 int mode = 300;//蛇移动的速度
-int total_score = 0;//总积分！
+int max_score = 0;//最高得分！
 char map[Row][Col] =//用char类型读写更快速！
 {
 	{9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9},
@@ -76,7 +76,7 @@ void menu()
 	cout << "	 吃果子变长" << endl;
 	cout << "	 碰到墙游戏结束" << endl;
 	cout << "	 吃到苹果即可得分" << endl<<endl;
-	cout << "当前总积分:" << total_score << endl;
+	cout << "历史最高得分:" << max_score << endl;
 	cout << "-----------享受你的游戏吧------------" << endl;
 	cout << "选择难度" << endl;
 	cout << "按下数字并回车以选择" << endl;
@@ -115,7 +115,7 @@ void test01()
 void putScore()
 {
 	ofstream ofs("score.txt");
-	ofs << total_score;
+	ofs << max_score;
 	ofs.close();
 }
 void getScore()
@@ -123,7 +123,7 @@ void getScore()
 	ifstream ifs("score.txt");
 	if (ifs)
 	{
-		ifs >> total_score;
+		ifs >> max_score;
 	}
 	ifs.close();
 
@@ -257,11 +257,14 @@ int main()
 			//cout.flush();
 			cout << endl << "游戏结束" << endl;
 			score = snake.size() - 3;
-			total_score += score;
-			putScore();
-			getScore();
+			if (score > max_score)
+			{
+				max_score = score;
+				putScore();
+				getScore();
+			}
 			cout << "本次得分：" << score << endl;
-			cout << "总得分：" << total_score << endl;
+			cout << "历史最高：" << max_score << endl;
 			break;
 		}
 	}
