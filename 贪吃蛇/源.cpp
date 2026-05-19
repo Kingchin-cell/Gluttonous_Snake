@@ -3,15 +3,8 @@
 #include<vector>
 #include<stdlib.h>//随机数
 #include<time.h>//用时间初始化随机数
-#include<thread>//多线程
 #include<conio.h>//按键监听
 #include<fstream>//文件读写
-
-#define Red "\033[31m"
-#define Green "\033[32m"
-#define White "\033[0m"
-#define Blue "\033[34m"
-#define Yellow "\033[33m"
 
 #define Row 20
 #define Col 20
@@ -87,17 +80,17 @@ void HideCursor()
 void menu()
 {
 	getScore();
-	cout << Green<<"--------------"<<"贪吃蛇"<<"-------------- " <<White<< endl;
-	cout << "欢迎来到贪吃蛇游戏  本游戏由"<<Red<<"柒"<<White<<"开发" << endl<<endl;
+	cout <<"--------------"<<"贪吃蛇"<<"-------------- " << endl;
+	cout << "欢迎来到贪吃蛇游戏  本游戏由"<<"柒"<<"开发" << endl<<endl;
 	cout << "游戏规则:" << endl;
 	cout << "	 W A S D 控制移动" << endl;
 	cout << "	 吃果子变长" << endl;
 	cout << "	 碰到墙游戏结束" << endl;
 	cout << "	 吃到苹果即可得分" << endl<<endl;
-	cout <<Yellow<< "-----------"<<"历史最高一览"<<"------------"<<White << endl<<endl;
-	cout <<Green<< "简单难度" << White"历史最高得分: " << max_score1 << endl;
-	cout <<Blue<<"中等难度" << White"历史最高得分: " << max_score2 << endl;
-	cout <<Red<< "困难难度" << White"历史最高得分: " << max_score3 << endl<<endl;
+	cout << "-----------"<<"历史最高一览"<<"------------" << endl<<endl;
+	cout << "简单难度" << "历史最高得分: " << max_score1 << endl;
+	cout <<"中等难度" << "历史最高得分: " << max_score2 << endl;
+	cout << "困难难度" << "历史最高得分: " << max_score3 << endl<<endl;
 	cout << "-------------开始游戏--------------" << endl;
 	cout << "选择难度" << endl;
 	cout << "按下数字并回车以选择" << endl;
@@ -170,8 +163,8 @@ void printMap()
 			switch (frame[i][j])
 			{
 			case Space:cout << "  "; break;
-			case Body: cout <<Green<< "蛇"<<White; break;
-			case Apple:cout << Red<<"果"<<White; break;
+			case Body: cout << "蛇"; break;
+			case Apple:cout <<"果"; break;
 			case Wall: cout << "墙"; break;
 			}
 		}
@@ -226,35 +219,21 @@ bool moveSnake()
 	}
 	return true;
 }
-void listenKey()
+void checkKey()
 {
-	while (1)
+	if (_kbhit())
 	{
-		int key = _getch();
-		Pos p1 = snake[0];
-		Pos p2 = snake[1];
+		char key = _getch();
 		switch (key)
 		{
 		case 'w':
-			p1.y--;
-			if (p1.x == p2.x && p1.y == p2.y)break;
-			direction = Up;
-			break;
+			if (direction != Down)direction = Up; break;
 		case 's':
-			p1.y++;
-			if (p1.x == p2.x && p1.y == p2.y)break;
-			direction = Down;
-			break;
+			if (direction != Up)direction = Down; break;
 		case 'a':
-			p1.x--;
-			if (p1.x == p2.x && p1.y == p2.y)break;
-			direction = Left;
-			break;
+			if (direction != Right)direction = Left; break;
 		case 'd':
-			p1.x++;
-			if (p1.x == p2.x && p1.y == p2.y)break;
-			direction = Right;
-			break;
+			if (direction != Left)direction = Right; break;
 		}
 	}
 }
@@ -270,14 +249,13 @@ int main()
 	snake.push_back(Pos(5, 5));
 	snake.push_back(Pos(4, 5));
 	snake.push_back(Pos(3, 5));
-	//启动线程
-	thread t(listenKey);
-	t.detach();
+
 	randApple();
 	while (1)
 	{
 		printMap();
 		Sleep(mode);
+		checkKey();
 		if (!moveSnake())
 		{
 			gotoxy(0, Row + 2);
