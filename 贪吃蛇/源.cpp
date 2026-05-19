@@ -72,6 +72,18 @@ char map[Row][Col] =//用char类型读写更快速！
 char frame[Row][Col];//用于打印的缓存
 int overall_select = 0;//用户的选择
 void getScore();
+void gotoxy(int x, int y)
+{
+	COORD pos;
+	pos.X=x;
+	pos.Y=y;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+}
+void HideCursor()
+{
+	CONSOLE_CURSOR_INFO info = { 1,0 };
+	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
+}
 void menu()
 {
 	getScore();
@@ -98,15 +110,15 @@ void menu()
 		switch (overall_select)
 		{
 		case 1:
-			mode = 200;
+			mode = 250;
 			cout << "您已选择难度：简单" << endl;
 			goto tag;
 		case 2:
-			mode = 100;
+			mode = 150;
 			cout << "您已选择难度：中等" << endl;
 			goto tag;
 		case 3:
-			mode = 50;
+			mode = 80;
 			cout << "您已选择难度：困难" << endl;
 			goto tag;
 		default:
@@ -150,7 +162,7 @@ void printMap()
 		frame[p.y][p.x] = Body;//记得要反着放
 	}
 	frame[applePos.y][applePos.x] = Apple;
-	system("cls");
+	gotoxy(0, 0);
 	for (int i = 0; i < Row; i++)
 	{
 		for (int j = 0; j < Col; j++)
@@ -163,6 +175,7 @@ void printMap()
 			case Wall: cout << "墙"; break;
 			}
 		}
+		cout << "                                        ";
 		cout << endl;
 	}
 }
@@ -247,8 +260,11 @@ void listenKey()
 }
 int main()
 {
+	
+	HideCursor();
 	int score = 0;
 	menu();
+	system("cls");
 	srand(time(NULL));
 	//初始化蛇体
 	snake.push_back(Pos(5, 5));
@@ -264,7 +280,7 @@ int main()
 		Sleep(mode);
 		if (!moveSnake())
 		{
-			system("cls");
+			gotoxy(0, Row + 2);
 			//cout.flush();
 			cout << endl << "游戏结束" << endl;
 			score = snake.size() - 3;
@@ -285,11 +301,11 @@ int main()
 				putScore();
 			}
 			if (overall_select == 1)
-				cout << "历史最高" << max_score1 << endl;
+				cout << "历史最高: " << max_score1 << endl;
 			if (overall_select == 2)
-				cout << "历史最高" << max_score2 << endl;
+				cout << "历史最高: " << max_score2 << endl;
 			if (overall_select == 3)
-				cout << "历史最高" << max_score3 << endl;
+				cout << "历史最高: " << max_score3 << endl;
 			break;
 		}
 	}
